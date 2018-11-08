@@ -1,6 +1,6 @@
 package pl.michal.cutleryInterface;
 
-public interface Cutlery {
+public interface CutleryUsage {
 	public void pickUp();
 	public void putDown();
 }

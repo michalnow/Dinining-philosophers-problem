@@ -1,8 +1,8 @@
 package pl.michal.knife;
 
-import pl.michal.cutleryInterface.Cutlery;
+import pl.michal.cutleryInterface.CutleryUsage;
 
-public class Knife implements Cutlery {
+public class Knife implements CutleryUsage {
 
 	private int id;
 	private boolean isBeingUsed;

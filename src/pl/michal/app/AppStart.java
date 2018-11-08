@@ -28,7 +28,7 @@ public class AppStart {
 		}
 
 		for (int i = 0; i < PHILOSOPHERS_QUANTITY; i++) {
-			philosophers.add(new Philosopher(forks.get(i), knives.get(i)));
+			philosophers.add(new Philosopher(i + 1,forks.get(i), knives.get(i)));
 
 			Thread thread = new Thread(philosophers.get(i), "Philosopher " + (i + 1));
 			thread.start();

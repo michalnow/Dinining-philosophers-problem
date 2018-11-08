@@ -9,8 +9,11 @@ public class Philosopher implements Runnable  {
 	private Knife knife;
 	private boolean pickedKnife;
 	private boolean pickedFork;
-
-	public Philosopher(Fork fork, Knife knife) {
+	private int id;
+	
+	
+	public Philosopher(int id, Fork fork, Knife knife) {
+		this.id = id;
 		this.fork = fork;
 		this.knife = knife;
 	}
@@ -45,6 +48,11 @@ public class Philosopher implements Runnable  {
 
 	public synchronized void backToThink() {
 		System.out.println(Thread.currentThread().getName() + " AGAIN THINKING");
+	}
+	
+
+	public int getId() {
+		return id;
 	}
 
 	@Override

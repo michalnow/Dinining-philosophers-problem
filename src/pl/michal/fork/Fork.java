@@ -1,8 +1,8 @@
 package pl.michal.fork;
 
-import pl.michal.cutleryInterface.Cutlery;
+import pl.michal.cutleryInterface.CutleryUsage;
 
-public class Fork implements Cutlery {
+public class Fork implements CutleryUsage {
 
 	private int id;
 	private boolean isBeingUsed;

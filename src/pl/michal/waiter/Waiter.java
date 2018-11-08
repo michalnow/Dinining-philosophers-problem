@@ -20,5 +20,11 @@ public class Waiter {
 			knives.add(new Knife(i + 1));
 		}
 	}
+	
+	public Knife pickUpKnife(int id) {
+		
+		
+		return null;
+	}
 
 }
