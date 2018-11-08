@@ -1,16 +1,28 @@
 package pl.michal.fork;
 
-public class Fork {
-	
+import pl.michal.cutleryInterface.Cutlery;
+
+public class Fork implements Cutlery {
+
 	private int id;
-	
+	private boolean isBeingUsed;
+
 	public Fork(int id) {
 		this.id = id;
+	}
+
+	@Override
+	public void pickUp() {
+		isBeingUsed = true;
+	}
+
+	@Override
+	public void putDown() {
+		isBeingUsed = false;
 	}
 
 	public int getId() {
 		return id;
 	}
 
-	
 }
