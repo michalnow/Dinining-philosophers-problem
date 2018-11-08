@@ -25,4 +25,9 @@ public class Fork implements Cutlery {
 		return id;
 	}
 
+	public boolean isBeingUsed() {
+		return isBeingUsed;
+	}
+	
+
 }
