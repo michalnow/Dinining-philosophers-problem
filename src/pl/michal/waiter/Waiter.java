@@ -21,10 +21,11 @@ public class Waiter {
 		}
 	}
 	
-	public Knife provideKnife(int id) {
+	public synchronized  Knife provideKnife() {
 		
 		for(int i=0; i<knives.size();i++) {
 			if(!knives.get(i).isBeingUsed()) {
+				knives.get(i).pickUp();
 				return knives.get(i);
 			}
 		}
@@ -32,15 +33,32 @@ public class Waiter {
 		return null;
 	}
 	
-	public Fork provideFork(int id) {
+	public synchronized Fork provideFork() {
 		
 		for(int i=0;i<forks.size();i++) {
 			if(!forks.get(i).isBeingUsed()) {
+				forks.get(i).pickUp();
 				return forks.get(i);
 			}
 		}
 		
 		return null;
+	}
+	
+	public synchronized void takeBackKnife(int id) {
+		for(int i=0;i<knives.size();i++) {
+			if(knives.get(i).getId() == id) {
+				knives.get(i).putDown();
+			}
+		}
+	}
+	
+	public synchronized void takeBackFork(int id) {
+		for(int i=0;i<forks.size();i++) {
+			if(forks.get(i).getId() == id) {
+				forks.get(i).putDown();
+			}
+		}
 	}
 
 }
