@@ -21,8 +21,24 @@ public class Waiter {
 		}
 	}
 	
-	public Knife pickUpKnife(int id) {
+	public Knife provideKnife(int id) {
 		
+		for(int i=0; i<knives.size();i++) {
+			if(!knives.get(i).isBeingUsed()) {
+				return knives.get(i);
+			}
+		}
+		
+		return null;
+	}
+	
+	public Fork provideFork(int id) {
+		
+		for(int i=0;i<forks.size();i++) {
+			if(!forks.get(i).isBeingUsed()) {
+				return forks.get(i);
+			}
+		}
 		
 		return null;
 	}
