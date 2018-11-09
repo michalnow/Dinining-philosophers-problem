@@ -10,6 +10,8 @@ public class Waiter {
 	private int knifeQuantity;
 	private List<Fork> forks;
 	private List<Knife> knives;
+	private boolean forkIsFree;
+	private boolean knifeIsFree;
 
 	public Waiter(int forkQuntit, int knifeQuantity) {
 		for (int i = 0; i < forkQuntity; i++) {
@@ -20,45 +22,58 @@ public class Waiter {
 			knives.add(new Knife(i + 1));
 		}
 	}
-	
-	public synchronized  Knife provideKnife() {
-		
-		for(int i=0; i<knives.size();i++) {
-			if(!knives.get(i).isBeingUsed()) {
+
+	public synchronized Knife provideKnife() {
+
+		for (int i = 0; i < knives.size(); i++) {
+			if (!knives.get(i).isBeingUsed()) {
 				knives.get(i).pickUp();
+				forkIsFree = false;
 				return knives.get(i);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public synchronized Fork provideFork() {
-		
-		for(int i=0;i<forks.size();i++) {
-			if(!forks.get(i).isBeingUsed()) {
+
+		for (int i = 0; i < forks.size(); i++) {
+			if (!forks.get(i).isBeingUsed()) {
 				forks.get(i).pickUp();
+				forkIsFree = false;
 				return forks.get(i);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public synchronized void takeBackKnife(int id) {
-		for(int i=0;i<knives.size();i++) {
-			if(knives.get(i).getId() == id) {
+		for (int i = 0; i < knives.size(); i++) {
+			if (knives.get(i).getId() == id) {
 				knives.get(i).putDown();
+				knifeIsFree = true;
 			}
 		}
+		notify();
 	}
-	
+
 	public synchronized void takeBackFork(int id) {
-		for(int i=0;i<forks.size();i++) {
-			if(forks.get(i).getId() == id) {
+		for (int i = 0; i < forks.size(); i++) {
+			if (forks.get(i).getId() == id) {
 				forks.get(i).putDown();
+				forkIsFree = true;
 			}
 		}
+		notify();
+	}
+
+	public boolean cutleryAvaiable() {
+		if (forkIsFree && knifeIsFree) {
+			return true;
+		}
+		return false;
 	}
 
 }
