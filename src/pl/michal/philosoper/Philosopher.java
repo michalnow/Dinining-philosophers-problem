@@ -2,23 +2,110 @@ package pl.michal.philosoper;
 
 import pl.michal.fork.Fork;
 import pl.michal.knife.Knife;
+import pl.michal.waiter.Waiter;
 
 public class Philosopher implements Runnable  {
 
-	private Fork fork;
-	private Knife knife;
-	private boolean pickedKnife;
-	private boolean pickedFork;
-	private int id;
+	private final static int FORK_QUANTITY = 5;
+	private final static int KNIFE_QUANTITY = 5;
+	private Waiter waiter;
+	private String name;
+	private boolean hasKnife;
+	private boolean hasFork;
+	private int hungryLevel = 0;
+	private Knife knife = null;
+	private Fork fork = null;
+	private int eatTurns = 0;
 	
 	
-	public Philosopher(int id, Fork fork, Knife knife) {
-		this.id = id;
-		this.fork = fork;
-		this.knife = knife;
+	public Philosopher(Waiter waiter, String name) {
+		this.waiter = waiter = new Waiter(FORK_QUANTITY , KNIFE_QUANTITY);
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
-	public synchronized void pickUpFork() {
+	private void takeKnife() {
+		if(knife.isBeingUsed()) {
+			knife = waiter.provideKnife();
+			hasKnife = true;
+		}else {
+			try {
+				System.out.println(getName() + "....IS WAITING FOR KNIFE....");
+				wait();
+			} catch (InterruptedException e) {
+				
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void takeFork() {
+		if(knife.isBeingUsed()) {
+			fork = waiter.provideFork();
+			hasFork = true;
+		}else {
+			try {
+				System.out.println(getName() + "....IS WAITING FOR FORK....");
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void think() {
+		if(fork == null || knife == null) {
+			System.out.println(getName() + " IS....THINKING ....");
+			try {
+				Thread.sleep((long) (Math.random()* 3500));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void eat() {
+		while(hungryLevel != 5) {
+			System.out.println(getName() + "IS....EATING OM NO OM....");
+			try {
+				Thread.sleep((long) (Math.random() * 3500));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			++hungryLevel;
+		}
+		eatTurns++;
+		waiter.takeBackFork(fork.getId());
+		waiter.takeBackKnife(fork.getId());
+		System.out.println(getName() + "IS....BACK TO THINKING....");
+		try {
+			Thread.sleep((long) (Math.random()*3500));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+
+
+	@Override
+	public void run() {
+		think();
+		while(eatTurns != 3) {
+			takeKnife();
+			takeFork();
+			if(fork != null && knife != null) {
+				eat();
+			}
+				
+			
+		}
+		
+	}
+
+	/*public synchronized void pickUpFork() {
 		System.out.println(Thread.currentThread().getName() + " Picked up fork " + fork.getId());
 		pickedFork = true;
 	}
@@ -79,5 +166,5 @@ public class Philosopher implements Runnable  {
 			e.printStackTrace();
 		}
 	
-	}
+	}*/
 }
