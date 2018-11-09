@@ -6,29 +6,21 @@ import java.util.List;
 import pl.michal.fork.Fork;
 import pl.michal.knife.Knife;
 import pl.michal.philosoper.Philosopher;
+import pl.michal.waiter.Waiter;
 
 public class AppStart {
 
 	final static int PHILOSOPHERS_QUANTITY = 5;
-	final static int KNIVES_QUANTITY = 5;
-	final static int FORKS_QUANTITY = 5;
+	final static int KNIVES_QUANTITY = 3;
+	final static int FORKS_QUANTITY = 4;
+	final static String[] names = { "Archimedes", "Sokrates", "Platon", "Arystoteles", "Zenon", "ANAKSAGORAS" };
 
 	public static void main(String[] args) {
-
+		Waiter waiter = new Waiter(FORKS_QUANTITY, KNIVES_QUANTITY);
 		List<Philosopher> philosophers = new ArrayList<Philosopher>();
-		List<Fork> forks = new ArrayList<Fork>();
-		List<Knife> knives = new ArrayList<Knife>();
-
-		for (int i = 0; i < KNIVES_QUANTITY; i++) {
-			knives.add(new Knife(i+1));
-		}
-
-		for (int i = 0; i < FORKS_QUANTITY; i++) {
-			forks.add(new Fork(i+1));
-		}
 
 		for (int i = 0; i < PHILOSOPHERS_QUANTITY; i++) {
-			philosophers.add(new Philosopher(i + 1,forks.get(i), knives.get(i)));
+			philosophers.add(new Philosopher(waiter, names[i]));
 
 			Thread thread = new Thread(philosophers.get(i), "Philosopher " + (i + 1));
 			thread.start();
