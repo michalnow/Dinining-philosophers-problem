@@ -1,20 +1,31 @@
 package pl.michal.waiter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.michal.fork.Fork;
 import pl.michal.knife.Knife;
 
 public class Waiter {
-	private int forkQuntity;
-	private int knifeQuantity;
+	private int forkQuantity = 3;
+	private int knifeQuantity = 4;
 	private List<Fork> forks;
 	private List<Knife> knives;
-	private boolean forkIsFree;
-	private boolean knifeIsFree;
+	private boolean forkIsFree = true;
+	private boolean knifeIsFree = true;
+	private List<Fork> usedForks;
+	private List<Knife> usedKnives;
+	private int knifeCount = 0;
+	private int forkCount = 0;
 
-	public Waiter(int forkQuntit, int knifeQuantity) {
-		for (int i = 0; i < forkQuntity; i++) {
+	public Waiter(int forkQuantity, int knifeQuantity) {
+
+		usedForks = new ArrayList<Fork>();
+		usedKnives = new ArrayList<Knife>();
+		forks = new ArrayList<Fork>();
+		knives = new ArrayList<Knife>();
+
+		for (int i = 0; i < forkQuantity; i++) {
 			forks.add(new Fork(i + 1));
 		}
 
@@ -25,12 +36,12 @@ public class Waiter {
 
 	public synchronized Knife provideKnife() {
 
-		for (int i = 0; i < knives.size(); i++) {
-			if (!knives.get(i).isBeingUsed()) {
-				knives.get(i).pickUp();
-				forkIsFree = false;
-				return knives.get(i);
-			}
+		if (usedKnives.size() != knifeQuantity && usedForks.size() != forkQuantity) {
+			knifeCount++;
+			knives.get(knifeCount - 1).pickUp();
+			usedKnives.add(knives.get(knifeCount - 1));
+			System.out.println("GIVING KNIFE " + knives.get(knifeCount - 1).getId());
+			return knives.get(knifeCount - 1);
 		}
 
 		return null;
@@ -38,42 +49,59 @@ public class Waiter {
 
 	public synchronized Fork provideFork() {
 
-		for (int i = 0; i < forks.size(); i++) {
-			if (!forks.get(i).isBeingUsed()) {
-				forks.get(i).pickUp();
-				forkIsFree = false;
-				return forks.get(i);
-			}
+		if (usedForks.size() != forkQuantity && usedKnives.size() != knifeQuantity) {
+			forkCount++;
+			forks.get(forkCount - 1).pickUp();
+			usedForks.add(forks.get(forkCount - 1));
+			System.out.println("GIVING FORK  " + forks.get(forkCount - 1).getId());
+			return forks.get(forkCount - 1);
 		}
 
 		return null;
 	}
 
 	public synchronized void takeBackKnife(int id) {
-		for (int i = 0; i < knives.size(); i++) {
-			if (knives.get(i).getId() == id) {
-				knives.get(i).putDown();
-				knifeIsFree = true;
+		for (int i = 0; i < usedKnives.size(); i++) {
+			if (usedKnives.get(i).getId() == id) {
+				usedKnives.remove(i);
+				knifeCount--;
 			}
 		}
 		notify();
 	}
 
 	public synchronized void takeBackFork(int id) {
-		for (int i = 0; i < forks.size(); i++) {
-			if (forks.get(i).getId() == id) {
-				forks.get(i).putDown();
-				forkIsFree = true;
+		for (int i = 0; i < usedForks.size(); i++) {
+			if (usedForks.get(i).getId() == id) {
+				usedForks.remove(i);
+				forkCount--;
 			}
 		}
 		notify();
 	}
 
 	public boolean cutleryAvaiable() {
-		if (forkIsFree && knifeIsFree) {
+		if (forkIsFree || knifeIsFree) {
 			return true;
 		}
 		return false;
 	}
 
+	public synchronized boolean forkIsFree() {
+		System.out.println(forkQuantity);
+		if (usedForks.size() != forkQuantity) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public synchronized boolean knifeIsFree() {
+		System.out.println(knifeQuantity);
+		if (usedKnives.size() != knifeQuantity) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
